@@ -17,13 +17,13 @@ const getContactById = async (id) => {
 
 const addContact = async (data) => {
   const contacts = await listContacts();
-  const newBook = {
+  const addContact = {
     id: nanoid(),
     ...data,
   };
-  contacts.push(newBook);
+  contacts.push(addContact);
   await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-  return newBook;
+  return addContact;
 };
 
 const updateContact = async (id, data) => {
