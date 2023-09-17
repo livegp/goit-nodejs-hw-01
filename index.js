@@ -1,5 +1,4 @@
-import { program } from "commander";
-
+import { Command } from "commander";
 import {
   listContacts,
   getContactById,
@@ -7,6 +6,19 @@ import {
   updateContact,
   removeContact,
 } from "./db/contacts.js";
+
+const program = new Command();
+
+program
+  .option("-a, --action <type>", "choose action")
+  .option("-i, --id <type>", "user id")
+  .option("-n, --name <type>", "user name")
+  .option("-e, --email <type>", "user email")
+  .option("-p, --phone <type>", "user phone");
+
+program.parse(process.argv);
+
+const options = program.opts();
 
 const invokeAction = async ({ action, id, name, email, phone }) => {
   switch (action) {
@@ -19,11 +31,7 @@ const invokeAction = async ({ action, id, name, email, phone }) => {
       console.log(getContactByIdResult);
       break;
     case "add":
-      const addContactResult = await addContact({
-        name,
-        email,
-        phone,
-      });
+      const addContactResult = await addContact({ name, email, phone });
       console.log(addContactResult);
       break;
     case "update":
@@ -43,14 +51,4 @@ const invokeAction = async ({ action, id, name, email, phone }) => {
   }
 };
 
-program
-  .option("-a, --action, <type>")
-  .option("-i, --id, <type>")
-  .option("-n, --name, <type>")
-  .option("-e, --email, <type>")
-  .option("-p, --phone, <type>");
-
-program.parse();
-
-const options = program.opts();
 invokeAction(options);
