@@ -5,7 +5,7 @@ import {
   addContact,
   updateContact,
   removeContact,
-} from "./db/contacts.js";
+} from "./contacts.js";
 
 const program = new Command();
 
@@ -21,33 +21,34 @@ program.parse(process.argv);
 const options = program.opts();
 
 const invokeAction = async ({ action, id, name, email, phone }) => {
-  switch (action) {
-    case "list":
-      const listContactsResult = await listContacts();
-      console.table(listContactsResult);
-      break;
-    case "get":
-      const getContactByIdResult = await getContactById(id);
-      console.log(getContactByIdResult);
-      break;
-    case "add":
-      const addContactResult = await addContact({ name, email, phone });
-      console.log(addContactResult);
-      break;
-    case "update":
-      const updateContactResult = await updateContact(id, {
-        name,
-        email,
-        phone,
-      });
-      console.log(updateContactResult);
-      break;
-    case "remove":
-      const removeContactResult = await removeContact(id);
-      console.log(removeContactResult);
-      break;
-    default:
-      console.warn("\x1B[31m Unknown action type!");
+  try {
+    switch (action) {
+      case "list":
+        console.table(await listContacts());
+        break;
+      case "get":
+        console.log(await getContactById(id));
+        break;
+      case "add":
+        console.log(await addContact({ name, email, phone }));
+        break;
+      case "update":
+        console.log(
+          await updateContact(id, {
+            name,
+            email,
+            phone,
+          })
+        );
+        break;
+      case "remove":
+        console.log(await removeContact(id));
+        break;
+      default:
+        console.warn("\x1B[31m Unknown action type!");
+    }
+  } catch (error) {
+    console.error("Error:", error.message);
   }
 };
 
